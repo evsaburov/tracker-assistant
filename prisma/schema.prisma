@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String
+  status     Status    @default(ACTIVE)
+  role       Role      @default(USER)
+  ban        Ban[]
+  Favorit    Favorit[]
+  deliver    Deliver[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  telegram   Telegram  @relation(fields: [telegramId], references: [id])
+  telegramId Int       @unique
+}
+
+model Telegram {
+  id         Int      @unique
+  first_name String
+  username   String
+  is_bot     Boolean
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  User       User[]
+}
+
+model Deliver {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Track {
+  id           Int       @id @default(autoincrement())
+  fk           Int       @unique
+  link         String
+  updated      DateTime
+  title        String
+  author       String
+  categoryCode String
+  category     String
+  linkImg      String?
+  deliver      Deliver[]
+  ban          Ban[]
+  favorit      Favorit[]
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+}
+
+model Ban {
+  id      Int     @id @default(autoincrement())
+  banType BanType
+  user    User    @relation(fields: [userId], references: [id])
+  userId  Int
+  track   Track   @relation(fields: [trackId], references: [id])
+  trackId Int
+}
+
+model Favorit {
+  id      Int   @id @default(autoincrement())
+  user    User  @relation(fields: [userId], references: [id])
+  userId  Int
+  track   Track @relation(fields: [trackId], references: [id])
+  trackId Int
+}
+
+enum BanType {
+  byAuthor
+  byCategory
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUBSCRIBER
+}
+
+enum Status {
+  ACTIVE
+  BLOCKED
+}
