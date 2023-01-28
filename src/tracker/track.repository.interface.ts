@@ -1,4 +1,4 @@
-import { TrackModel } from '@prisma/client';
+import { Track as TrackModel } from '@prisma/client';
 import { Track } from './track.entity';
 
 export interface ITrackRepository {
