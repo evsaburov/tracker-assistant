@@ -1,28 +1,31 @@
-import { ConfigService } from '../config/config.service';
-import { ILogger } from '../logger/logger.interface';
+import { ILoggerService } from '../logger/logger.interface';
 import { User } from './user.entity';
 import { IUserRepository } from './user.repository.interface';
 import { User as UserModel } from '@prisma/client';
-
-export class UserService {
+import { IUserService } from './user.service.interface';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../types';
+import 'reflect-metadata';
+@injectable()
+export class UserService implements IUserService {
 	constructor(
-		private readonly userRepository: IUserRepository,
-		private readonly configService: ConfigService,
-		private logger: ILogger,
+		@inject(TYPES.IUserRepository) private readonly userRepository: IUserRepository,
+		@inject(TYPES.ILoggerService) private logger: ILoggerService,
 	) {}
 
 	async create(user: User): Promise<UserModel> {
-		const createdUser = this.userRepository.create(user);
+		const createdUser = await this.userRepository.create(user);
 		if (createdUser === null) this.logger.error('Ошибка создания пользователя');
 		return createdUser;
 	}
+
 	async find(id: number): Promise<UserModel | null> {
 		const foundUser = this.userRepository.find(id);
 		if (foundUser === null) this.logger.error('Пользователь не найден');
 		return foundUser;
 	}
-	async findByTelegramId(id: number): Promise<UserModel | null> {
-		const foundUser = this.userRepository.findByTelegramID(id);
+	async findByChatId(id: number): Promise<UserModel | null> {
+		const foundUser = this.userRepository.findByChat(id);
 		if (foundUser === null) this.logger.error('Пользователь не найден');
 		return foundUser;
 	}

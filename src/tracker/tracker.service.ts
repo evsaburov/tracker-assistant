@@ -2,36 +2,53 @@ import { Track } from './track.entity';
 import { ITrackRepository } from './track.repository.interface';
 import { ConfigService } from '../config/config.service';
 import axios from 'axios';
-import { ILogger } from '../logger/logger.interface';
+import { ILoggerService } from '../logger/logger.interface';
 import { parseString } from 'xml2js';
+import { ITrackService } from './tracker.service.interface';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../types';
+import 'reflect-metadata';
+import { JSDOM } from 'jsdom';
 
-export class TrackService {
+@injectable()
+export class TrackService implements ITrackService {
 	constructor(
-		private readonly trackRepository: ITrackRepository,
-		private readonly configService: ConfigService,
-		private logger: ILogger,
+		@inject(TYPES.ITrackRepository) private readonly trackRepository: ITrackRepository,
+		@inject(TYPES.IConfigService) private readonly configService: ConfigService,
+		@inject(TYPES.ILoggerService) private readonly LoggerService: ILoggerService,
 	) {}
 
+	async getPicture(text: string): Promise<string> {
+		// 	const searchText = text.replace(/\[.*?\]/g, '');
+		// 	const url = this.configService.get('IMG_SERVICE_URL') + encodeURI(searchText);
+		// 	const { data, status } = await axios.get(url);
+		// 	if (status !== 200) throw new Error('Ошибка при получении картинки с сервера Yandex');
+		// 	const { window } = new JSDOM(data);
+		// 	if (window === null) throw new Error('Ошибка парсинга');
+		// 	const objImg = window.document.querySelector('.serp-item__link img');
+		// 	if (objImg === null) throw new Error('Не удалось получить ссылку из ответа');
+		return 'img';
+	}
+
 	async update(): Promise<void> {
+		this.LoggerService.log('Получение данных из ресурса');
 		const tracks = await this.getData();
-		tracks.forEach(async (track) => {
-			const upsertTrack = await this.trackRepository.create(track);
-			console.log(upsertTrack.title);
-		});
+		tracks.forEach(async (track) => await this.trackRepository.create(track));
 	}
 
 	async getData(): Promise<Track[]> {
 		const address = this.configService.get('TRACKER_URL');
 		const url = typeof address === 'number' ? address.toString() : address;
 		const { data, status } = await axios.get(url);
-		if (status !== 200) this.logger.error('[TrackService] Ошибка при получении данных с трекера');
+		if (status !== 200)
+			this.LoggerService.error('[TrackService] Ошибка при получении данных с трекера');
 		return await this.parseData(data);
 	}
 
 	async parseData(data: string): Promise<Track[]> {
 		const tracks = new Array<Track>();
-		parseString(data, (error, result): void => {
-			if (error !== null) throw this.logger.error('[XMLService] Ошибка парсинга');
+		parseString(data, async (error, result): Promise<void> => {
+			if (error !== null) throw this.LoggerService.error('[XMLService] Ошибка парсинга');
 			for (const track of result.feed['entry']) {
 				tracks.push(
 					new Track(

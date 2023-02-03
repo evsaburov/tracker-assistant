@@ -1,14 +1,12 @@
 export class Track {
-	private readonly _categoryCode: string;
-	private readonly _linkImg: string;
-	private readonly _fk: number;
-	private readonly _link: string;
-	private readonly _updated: Date;
-	private readonly _title: string;
-	private readonly _author: string;
-	private readonly _category: string;
-	private readonly IMG_NOT_FOUND =
-		'https://avatars.mds.yandex.net/i?id=ebef5788e349fab3452f691d24d0f1a74d2f3a93-8340026-images-thumbs&n=13';
+	readonly categoryCode: string;
+	readonly linkImg: string;
+	readonly fk: number;
+	readonly link: string;
+	readonly updated: Date;
+	readonly title: string;
+	readonly author: string;
+	readonly category: string;
 
 	constructor(
 		id: string[],
@@ -18,13 +16,14 @@ export class Track {
 		author: fieldTrack[],
 		category: categoryTrack[],
 	) {
-		this._fk = this.getIdFromString(id);
-		this._linkImg = this.IMG_NOT_FOUND;
-		this._link = this.getLinkFromObject(link);
-		this._updated = new Date(updated);
-		this._title = this.getTitle(title);
-		this._author = this.getAuthorFomString(author);
-		[this._category, this._categoryCode] = this.getCategory(category);
+		this.fk = this.getIdFromString(id);
+		this.linkImg =
+			'https://avatars.mds.yandex.net/i?id=ebef5788e349fab3452f691d24d0f1a74d2f3a93-8340026-images-thumbs&n=13';
+		this.link = this.getLinkFromObject(link);
+		this.updated = new Date(updated);
+		this.title = this.getTitle(title);
+		this.author = this.getAuthorFomString(author);
+		[this.category, this.categoryCode] = this.getCategory(category);
 	}
 
 	private getTitle(row: string[]): string {
@@ -47,31 +46,6 @@ export class Track {
 
 	private getLinkFromObject<T extends fieldTrack>(obj: T[]): string {
 		return obj[0]['$']['href'];
-	}
-
-	public get fk(): number {
-		return this._fk;
-	}
-	public get linkImg(): string {
-		return this._linkImg;
-	}
-	public get categoryCode(): string {
-		return this._categoryCode;
-	}
-	public get category(): string {
-		return this._category;
-	}
-	public get author(): string {
-		return this._author;
-	}
-	public get title(): string {
-		return this._title;
-	}
-	public get updated(): Date {
-		return this._updated;
-	}
-	public get link(): string {
-		return this._link;
 	}
 }
 

@@ -1,8 +1,8 @@
 import { User } from './user.entity';
 import { User as UserModel } from '@prisma/client';
 
-export interface IUserRepository {
+export class IUserService {
 	create: (user: User) => Promise<UserModel>;
-	findByChat: (telegram_id: number) => Promise<UserModel | null>;
 	find: (id: number) => Promise<UserModel | null>;
+	findByChatId: (id: number) => Promise<UserModel | null>;
 }

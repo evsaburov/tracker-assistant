@@ -1,24 +1,34 @@
 import { App } from './app';
+import { Container } from 'inversify';
 import { LoggerService } from './logger/logger.service';
 import { ConfigService } from './config/config.service';
-import { TrackService } from './tracker/tracker.service';
-import { TrackRepository } from './tracker/track.repository';
 import { PrismaService } from './database/prisma.service';
-import { BotTelegram } from './telegram/telegram';
+import { BotTracker } from './telegram/rutracker/telegram';
+import { IConfigService } from './config/config.service.interface';
+import { IPrismaService } from './database/prisma.interface';
+import { ILoggerService } from './logger/logger.interface';
+import { ITrackRepository } from './tracker/track.repository.interface';
+import { ITrackService } from './tracker/tracker.service.interface';
+import { TrackRepository } from './tracker/track.repository';
+import { TrackService } from './tracker/tracker.service';
+import { IUserRepository } from './users/user.repository.interface';
+import { UserRepository } from './users/user.repository';
+import { IUserService } from './users/user.service.interface';
+import { UserService } from './users/user.service';
+import { IBotTracker } from './telegram/rutracker/telegram.interface';
+import { TYPES } from './types';
 
-async function bootstrap(): Promise<void> {
-	const logger = new LoggerService();
-	const config = new ConfigService();
+const appContainer = new Container();
+appContainer.bind<ILoggerService>(TYPES.ILoggerService).to(LoggerService).inSingletonScope();
+appContainer.bind<IConfigService>(TYPES.IConfigService).to(ConfigService).inSingletonScope();
+appContainer.bind<IPrismaService>(TYPES.IPrismaService).to(PrismaService).inSingletonScope();
+appContainer.bind<ITrackRepository>(TYPES.ITrackRepository).to(TrackRepository);
+appContainer.bind<ITrackService>(TYPES.ITrackService).to(TrackService);
+appContainer.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
+appContainer.bind<IUserService>(TYPES.IUserService).to(UserService);
+appContainer.bind<IBotTracker>(TYPES.IBotTracker).to(BotTracker);
+appContainer.bind<App>(TYPES.Application).to(App);
+const app = appContainer.get<App>(TYPES.Application);
+app.init();
 
-	const botTelegram = new BotTelegram(logger, config);
-	const app = new App(logger, botTelegram);
-
-	const prisma = new PrismaService(logger);
-	const trackRepository = new TrackRepository(prisma);
-	const track = new TrackService(trackRepository, config, logger);
-	await track.update();
-
-	app.init();
-}
-
-bootstrap();
+export { app, appContainer };

@@ -1,5 +1,7 @@
-import { TrackerResponse } from './dto/tracker-response.dto';
+import { Track } from './track.entity';
 
 export interface ITrackService {
-	getData: () => Promise<TrackerResponse>;
+	getData: () => Promise<Track[]>;
+	update: () => Promise<void>;
+	getPicture: (text: string) => Promise<String>;
 }

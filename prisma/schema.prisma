@@ -12,7 +12,10 @@ datasource db {
 
 model User {
   id         Int       @id @default(autoincrement())
-  name       String
+  username   String
+  first_name String
+  chat       Int       @unique
+  botId      BigInt
   status     Status    @default(ACTIVE)
   role       Role      @default(USER)
   ban        Ban[]
@@ -20,28 +23,39 @@ model User {
   deliver    Deliver[]
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
-  telegram   Telegram  @relation(fields: [telegramId], references: [id])
-  telegramId Int       @unique
 }
 
-model Telegram {
-  id         Int      @unique
-  first_name String
-  username   String
-  is_bot     Boolean
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  User       User[]
-}
+// model Telegram {
+//   id         Int      @unique
+//   type       TypeBot
+//   first_name String
+//   username   String
+//   is_bot     Boolean
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+//   User       User[]
+// }
 
 model Deliver {
-  id         Int      @id @default(autoincrement())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     Int
-  track      Track    @relation(fields: [trackId], references: [id])
-  trackId    Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id          Int          @id @default(autoincrement())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  track       Track?       @relation(fields: [postId], references: [id], map: "track_postId")
+  livejournal livejournal? @relation(fields: [postId], references: [id], map: "livejournal_postId")
+  postId      Int
+  type_chat   TypeChat
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+}
+
+model livejournal {
+  id         Int       @id @default(autoincrement())
+  link       String
+  title      String
+  author     String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  Deliver    Deliver[]
 }
 
 model Track {
@@ -79,8 +93,8 @@ model Favorit {
 }
 
 enum BanType {
-  byAuthor
-  byCategory
+  ByAuthor
+  BanType
 }
 
 enum Role {
@@ -92,4 +106,10 @@ enum Role {
 enum Status {
   ACTIVE
   BLOCKED
+}
+
+enum TypeChat {
+  RUTRACKER
+  LIVEJOURNAL
+  NASA
 }

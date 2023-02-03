@@ -22,3 +22,11 @@ npm i xml2js
 npm i --save-dev @types/xml2js
 
 npm i telegraf-session-local
+
+npm i reflect-metadata
+npm i inversify
+
+npm install --save node-cron
+npm i --save-dev @types/node-cron
+
+npm install jsdom

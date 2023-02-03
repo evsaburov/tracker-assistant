@@ -1,10 +1,14 @@
 import { Track as TrackModel } from '@prisma/client';
-import { PrismaService } from '../database/prisma.service';
+import { inject, injectable } from 'inversify';
+import { IPrismaService } from '../database/prisma.interface';
+import { TYPES } from '../types';
 import { Track } from './track.entity';
 import { ITrackRepository } from './track.repository.interface';
+import 'reflect-metadata';
 
+@injectable()
 export class TrackRepository implements ITrackRepository {
-	constructor(private readonly prismaService: PrismaService) {}
+	constructor(@inject(TYPES.IPrismaService) readonly prismaService: IPrismaService) {}
 
 	async create(track: Track): Promise<TrackModel> {
 		return this.prismaService.client.track.upsert({
