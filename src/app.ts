@@ -16,7 +16,7 @@ export class App {
 
 	init(): void {
 		this.botTracker.init();
-		// schedule('0 * * * *', () => this.track.update());
+		schedule('0 * * * *', () => this.track.update());
 		this.track.update();
 		this.LoggerService.log('Приложение запущено');
 	}

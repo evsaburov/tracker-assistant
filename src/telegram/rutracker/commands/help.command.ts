@@ -13,8 +13,8 @@ export class HelpCommand extends Command {
 			await ctx.reply(
 				'Вам доступно:',
 				Markup.inlineKeyboard([
-					[Markup.button.callback('Начать получать новости', 'start')],
-					[Markup.button.callback('Остановить получение новостей', 'stop')],
+					[Markup.button.callback('Подписаться', 'start')],
+					[Markup.button.callback('Отписаться', 'stop')],
 					[Markup.button.callback('Избранное', 'likes')],
 					[Markup.button.callback('Настройки', 'settings')],
 					[Markup.button.callback('Список блокировок', 'blocks')],

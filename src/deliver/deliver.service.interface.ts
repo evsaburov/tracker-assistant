@@ -1,3 +1,8 @@
+import { Deliver, Track, User } from '@prisma/client';
+
 export interface IDeliverService {
-	start: () => Promise<void>;
+	init: () => Promise<void>;
+	getPostForUser: (user: User) => Promise<Track | null>;
+	checkPost: (user: User, track: Track) => Promise<boolean>;
+	getLastPost: (user: User, track: Track) => Promise<Track[] | null>;
 }

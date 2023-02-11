@@ -1,14 +1,14 @@
-import { Track } from './track.entity';
-import { ITrackRepository } from './track.repository.interface';
-import { ConfigService } from '../config/config.service';
-import axios from 'axios';
-import { ILoggerService } from '../logger/logger.interface';
-import { parseString } from 'xml2js';
-import { ITrackService } from './tracker.service.interface';
-import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
+import { parseString } from 'xml2js';
+import { ConfigService } from '../config/config.service';
+import { ILoggerService } from '../logger/logger.interface';
+import { ITrackRepository } from './track.repository.interface';
+import { ITrackService } from './tracker.service.interface';
+import { Track as TrackModel } from '@prisma/client';
+import { Track } from './track.entity';
+import { inject, injectable } from 'inversify';
+import axios from 'axios';
 import 'reflect-metadata';
-import { JSDOM } from 'jsdom';
 
 @injectable()
 export class TrackService implements ITrackService {
@@ -17,6 +17,10 @@ export class TrackService implements ITrackService {
 		@inject(TYPES.IConfigService) private readonly configService: ConfigService,
 		@inject(TYPES.ILoggerService) private readonly LoggerService: ILoggerService,
 	) {}
+
+	getLastTracks(amount: number, delta: number): Promise<TrackModel[] | null> {
+		return this.trackRepository.getLast(amount, delta);
+	}
 
 	async getPicture(text: string): Promise<string> {
 		// 	const searchText = text.replace(/\[.*?\]/g, '');
@@ -64,4 +68,6 @@ export class TrackService implements ITrackService {
 		});
 		return tracks;
 	}
+
+	async sendMessage(botId: number, chat: number, message: string): Promise<void> {}
 }

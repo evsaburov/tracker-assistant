@@ -5,4 +5,5 @@ export class IUserService {
 	create: (user: User) => Promise<UserModel>;
 	find: (id: number) => Promise<UserModel | null>;
 	findByChatId: (id: number) => Promise<UserModel | null>;
+	usersByBot: (id: number) => Promise<UserModel[] | null>;
 }

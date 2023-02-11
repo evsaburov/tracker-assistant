@@ -1,4 +1,4 @@
-import { User as UserModel } from '@prisma/client';
+import { Role, Status, User as UserModel } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { User } from './user.entity';
 import { IUserRepository } from './user.repository.interface';
@@ -24,6 +24,16 @@ export class UserRepository implements IUserRepository {
 	async find(id: number): Promise<UserModel | null> {
 		return this.prismaService.client.user.findFirst({
 			where: { id: id },
+		});
+	}
+
+	async findByBot(id: number): Promise<UserModel[] | null> {
+		return this.prismaService.client.user.findMany({
+			where: {
+				botId: id,
+				role: Role.USER,
+				status: Status.ACTIVE,
+			},
 		});
 	}
 }

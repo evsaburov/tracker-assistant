@@ -1,7 +1,7 @@
 {
-	"name": "tracker-assistant",
+	"name": "post-assistant",
 	"version": "1.0.0",
-	"description": "tracker-assistant",
+	"description": "assistant",
 	"main": "main.js",
 	"type": "commonjs",
 	"scripts": {

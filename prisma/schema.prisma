@@ -43,7 +43,7 @@ model Deliver {
   track       Track?       @relation(fields: [postId], references: [id], map: "track_postId")
   livejournal livejournal? @relation(fields: [postId], references: [id], map: "livejournal_postId")
   postId      Int
-  type_chat   TypeChat
+  botId       Int
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
 }
@@ -106,10 +106,4 @@ enum Role {
 enum Status {
   ACTIVE
   BLOCKED
-}
-
-enum TypeChat {
-  RUTRACKER
-  LIVEJOURNAL
-  NASA
 }

@@ -25,15 +25,15 @@ export class BotTracker implements IBotTracker {
 		@inject(TYPES.IConfigService) private configService: IConfigService,
 		@inject(TYPES.IUserService) private userService: IUserService,
 	) {
-		this.bot = new Telegraf<IBotContext>(this.configService.get('BOT_TOKEN'));
+		this.bot = new Telegraf<IBotContext>(this.configService.get('BOT_TOKEN_RUTRACKER'));
 		this.bot.use(new LocalSession({ database: 'sessions.json' }).middleware());
 		this.middleware();
 	}
 
 	middleware(): void {
 		this.bot.use(async (ctx, next) => {
-			await userController(ctx, this.userService);
-			next();
+			const result = await userController(ctx, this.userService);
+			if (result) await next();
 		});
 	}
 

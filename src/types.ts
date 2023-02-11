@@ -7,5 +7,7 @@ export const TYPES = {
 	ITrackService: Symbol.for('ITrackService'),
 	IUserRepository: Symbol.for('IUserRepository'),
 	IUserService: Symbol.for('IUserService'),
+	IDeliverRepository: Symbol.for('IDeliverRepository'),
 	IBotTracker: Symbol.for('IBotTracker'),
+	ITelegramMessageService: Symbol.for('ITelegramMessageService'),
 };

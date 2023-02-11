@@ -1,4 +1,5 @@
-// enum Status {
-// 	ACTIVE = 'ACTIVE',
-// 	BLOCKED = 'BLOCKED',
-// }
+export const BOTID = {
+	RUTRACKER: 1111111111,
+	LIVEJOURNAL: 1111111111,
+	NASA: 1111111111,
+};

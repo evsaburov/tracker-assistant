@@ -29,4 +29,11 @@ export class UserService implements IUserService {
 		if (foundUser === null) this.logger.error('Пользователь не найден');
 		return foundUser;
 	}
+
+	async usersByBot(botId: number): Promise<UserModel[] | null> {
+		const foundUsers = this.userRepository.findByBot(botId);
+		if (foundUsers === null) this.logger.error('Пользователи не найдены');
+		return foundUsers;
+		// !!!!!!!
+	}
 }
