@@ -1,4 +1,4 @@
-import { Deliver, Track as TrackModel } from '@prisma/client';
+import { Track as TrackModel } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { IPrismaService } from '../database/prisma.interface';
 import { TYPES } from '../types';
@@ -22,7 +22,7 @@ export class TrackRepository implements ITrackRepository {
 		return this.prismaService.client.track.findFirst({ where: { id } });
 	}
 
-	async getLast(amount: number, delta: number): Promise<TrackModel[] | null> {
+	async getLast(amount: number, delta: number): Promise<TrackModel[]> {
 		return await this.prismaService.client.track.findMany({
 			skip: amount,
 			take: delta,

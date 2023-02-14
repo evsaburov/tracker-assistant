@@ -11,56 +11,32 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   username   String
   first_name String
-  chat       Int       @unique
-  botId      BigInt
-  status     Status    @default(ACTIVE)
-  role       Role      @default(USER)
-  ban        Ban[]
-  Favorit    Favorit[]
-  deliver    Deliver[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  chat       Int             @unique
+  status     Status          @default(ACTIVE)
+  role       Role            @default(USER)
+  ban        BanTrack[]
+  Favorit    FavoriteTrack[]
+  deliver    DeliverTrack[]
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
 }
 
-// model Telegram {
-//   id         Int      @unique
-//   type       TypeBot
-//   first_name String
-//   username   String
-//   is_bot     Boolean
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-//   User       User[]
-// }
-
-model Deliver {
-  id          Int          @id @default(autoincrement())
-  user        User         @relation(fields: [userId], references: [id])
-  userId      Int
-  track       Track?       @relation(fields: [postId], references: [id], map: "track_postId")
-  livejournal livejournal? @relation(fields: [postId], references: [id], map: "livejournal_postId")
-  postId      Int
-  botId       Int
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @updatedAt
-}
-
-model livejournal {
-  id         Int       @id @default(autoincrement())
-  link       String
-  title      String
-  author     String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  Deliver    Deliver[]
+model DeliverTrack {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Track {
-  id           Int       @id @default(autoincrement())
-  fk           Int       @unique
+  id           Int             @id @default(autoincrement())
+  fk           Int             @unique
   link         String
   updated      DateTime
   title        String
@@ -68,33 +44,37 @@ model Track {
   categoryCode String
   category     String
   linkImg      String?
-  deliver      Deliver[]
-  ban          Ban[]
-  favorit      Favorit[]
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  ban          BanTrack[]
+  favorit      FavoriteTrack[]
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+  DeliverTrack DeliverTrack[]
 }
 
-model Ban {
-  id      Int     @id @default(autoincrement())
-  banType BanType
-  user    User    @relation(fields: [userId], references: [id])
-  userId  Int
-  track   Track   @relation(fields: [trackId], references: [id])
-  trackId Int
+model BanTrack {
+  id         Int      @id @default(autoincrement())
+  banType    BanType
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-model Favorit {
-  id      Int   @id @default(autoincrement())
-  user    User  @relation(fields: [userId], references: [id])
-  userId  Int
-  track   Track @relation(fields: [trackId], references: [id])
-  trackId Int
+model FavoriteTrack {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 enum BanType {
   ByAuthor
-  BanType
+  BanCategory
 }
 
 enum Role {
@@ -106,4 +86,5 @@ enum Role {
 enum Status {
   ACTIVE
   BLOCKED
+  STOP
 }

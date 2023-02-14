@@ -4,5 +4,5 @@ import { Track } from './track.entity';
 export interface ITrackRepository {
 	create: (track: Track) => Promise<TrackModel>;
 	find: (id: number) => Promise<TrackModel | null>;
-	getLast: (amount: number, delta: number) => Promise<TrackModel[] | null>;
+	getLast: (amount: number, delta: number) => Promise<TrackModel[]>;
 }

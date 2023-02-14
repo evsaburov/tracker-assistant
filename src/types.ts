@@ -10,4 +10,7 @@ export const TYPES = {
 	IDeliverRepository: Symbol.for('IDeliverRepository'),
 	IBotTracker: Symbol.for('IBotTracker'),
 	ITelegramMessageService: Symbol.for('ITelegramMessageService'),
+	IDeliverTrackService: Symbol.for('IDeliverTrackService'),
+	IFavoriteService: Symbol.for('IFavoriteService'),
+	IBanService: Symbol.for('IBanService'),
 };

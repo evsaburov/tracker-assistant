@@ -1,7 +1,7 @@
 import { ILoggerService } from '../logger/logger.interface';
 import { User } from './user.entity';
 import { IUserRepository } from './user.repository.interface';
-import { User as UserModel } from '@prisma/client';
+import { Status, User as UserModel } from '@prisma/client';
 import { IUserService } from './user.service.interface';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
@@ -14,26 +14,21 @@ export class UserService implements IUserService {
 	) {}
 
 	async create(user: User): Promise<UserModel> {
-		const createdUser = await this.userRepository.create(user);
-		if (createdUser === null) this.logger.error('Ошибка создания пользователя');
-		return createdUser;
+		return await this.userRepository.create(user);
+	}
+
+	async setStatus(userId: number, status: Status): Promise<UserModel> {
+		return await this.userRepository.setStatus(userId, status);
 	}
 
 	async find(id: number): Promise<UserModel | null> {
-		const foundUser = this.userRepository.find(id);
-		if (foundUser === null) this.logger.error('Пользователь не найден');
-		return foundUser;
+		return this.userRepository.find(id);
 	}
 	async findByChatId(id: number): Promise<UserModel | null> {
-		const foundUser = this.userRepository.findByChat(id);
-		if (foundUser === null) this.logger.error('Пользователь не найден');
-		return foundUser;
+		return this.userRepository.findByChat(id);
 	}
 
-	async usersByBot(botId: number): Promise<UserModel[] | null> {
-		const foundUsers = this.userRepository.findByBot(botId);
-		if (foundUsers === null) this.logger.error('Пользователи не найдены');
-		return foundUsers;
-		// !!!!!!!
+	async activeUsers(): Promise<UserModel[]> {
+		return this.userRepository.findActive();
 	}
 }

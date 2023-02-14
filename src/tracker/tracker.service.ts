@@ -18,7 +18,7 @@ export class TrackService implements ITrackService {
 		@inject(TYPES.ILoggerService) private readonly LoggerService: ILoggerService,
 	) {}
 
-	getLastTracks(amount: number, delta: number): Promise<TrackModel[] | null> {
+	getLastTracks(amount: number, delta: number): Promise<TrackModel[]> {
 		return this.trackRepository.getLast(amount, delta);
 	}
 

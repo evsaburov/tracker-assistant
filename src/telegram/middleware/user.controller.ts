@@ -1,6 +1,6 @@
-import { Status } from '@prisma/client';
-import { User } from '../../../users/user.entity';
-import { IUserService } from '../../../users/user.service.interface';
+import { Status, User as UserModel } from '@prisma/client';
+import { User } from '../../users/user.entity';
+import { IUserService } from '../../users/user.service.interface';
 import { IBotContext } from '../context/context.interface';
 
 export const userController = async (
@@ -14,13 +14,12 @@ export const userController = async (
 	if (!ctx.botInfo.id) throw new Error('не удалось получить bot id');
 
 	const chatId = ctx.from.id;
-	const botId = ctx.botInfo.id;
-	const user = await userService.findByChatId(chatId);
+	let user: UserModel | null = await userService.findByChatId(chatId);
 	if (!user) {
-		const userEntity = new User(chatId, botId, ctx.from.username, ctx.from.first_name);
-		const user = await userService.create(userEntity);
+		const userEntity = new User(chatId, ctx.from.username, ctx.from.first_name);
+		user = await userService.create(userEntity);
+		ctx.session.userId = user.id;
 	}
-	if (user === null) throw new Error('не удалось создать пользователя');
 	if (user.status === Status.BLOCKED) {
 		await ctx.reply('Ваш чат заблокирован');
 		return false;

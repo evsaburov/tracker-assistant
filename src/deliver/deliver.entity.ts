@@ -1,11 +1,9 @@
 export class Deliver {
 	readonly userId: number;
-	readonly postId: number;
-	readonly botId: number;
+	readonly trackId: number;
 
-	constructor(user: number, post: number, botId: number) {
+	constructor(user: number, post: number) {
 		this.userId = user;
-		this.postId = post;
-		this.botId = botId;
+		this.trackId = post;
 	}
 }

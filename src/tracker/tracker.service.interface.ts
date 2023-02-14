@@ -5,5 +5,5 @@ export interface ITrackService {
 	getData: () => Promise<Track[]>;
 	update: () => Promise<void>;
 	getPicture: (text: string) => Promise<String>;
-	getLastTracks: (amount: number, delta: number) => Promise<TrackModel[] | null>;
+	getLastTracks: (amount: number, delta: number) => Promise<TrackModel[]>;
 }

@@ -3,7 +3,14 @@
     {
       "id": "346242568:346242568",
       "data": {
-        "courseLike": true
+        "courseLike": true,
+        "userId": 1
+      }
+    },
+    {
+      "id": "912648766:912648766",
+      "data": {
+        "userId": 2
       }
     }
   ]

@@ -1,11 +1,15 @@
+import { Status } from '@prisma/client';
 import { Markup, Telegraf } from 'telegraf';
+import { IUserService } from '../../users/user.service.interface';
 import { IBotContext } from '../context/context.interface';
 import { Command } from './commands.class';
 import { HELLO } from './constants';
 
 export class StartCommand extends Command {
-	constructor(bot: Telegraf<IBotContext>) {
+	readonly userService: IUserService;
+	constructor(bot: Telegraf<IBotContext>, userService: IUserService) {
 		super(bot);
+		this.userService = userService;
 	}
 	handle(): void {
 		this.bot.start(async (ctx) => {
@@ -19,9 +23,9 @@ export class StartCommand extends Command {
 				]),
 			);
 		});
-		this.bot.action('start', (ctx) => {
-			ctx.session.courseLike = true;
-			ctx.editMessageText('Круто');
+		this.bot.action('start', async (ctx) => {
+			await this.userService.setStatus(ctx.session.userId, Status.ACTIVE);
+			ctx.editMessageText('Подписка активирована');
 		});
 		this.bot.action('stop', (ctx) => {
 			ctx.session.courseLike = true;
