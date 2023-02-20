@@ -7,7 +7,7 @@ import { TYPES } from '../types';
 import 'reflect-metadata';
 @injectable()
 export class UserRepository implements IUserRepository {
-	constructor(@inject(TYPES.IPrismaService) private readonly prismaService: PrismaService) {}
+	constructor(@inject(TYPES.IPrismaService) readonly prismaService: PrismaService) {}
 
 	async setStatus(userId: number, status: Status): Promise<UserModel> {
 		return this.prismaService.client.user.update({

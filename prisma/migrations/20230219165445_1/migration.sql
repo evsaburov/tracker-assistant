@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "BanType" AS ENUM ('ByAuthor', 'BanType');
+CREATE TYPE "BanType" AS ENUM ('ByAuthor', 'ByCategory');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN', 'SUBSCRIBER');

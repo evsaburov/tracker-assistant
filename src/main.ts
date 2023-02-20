@@ -20,8 +20,6 @@ import { DeliverTrackService } from './deliver/deliver.track.service';
 import { IDeliverRepository } from './deliver/deliver.repository.interface';
 import { DeliverRepository } from './deliver/deliver.repository';
 import { IBotTracker } from './telegram/telegram.interface';
-import { ITelegramMessageService } from './telegram/services/telegram.message.service.interface';
-import { TelegramMessageService } from './telegram/services/telegram.message.service';
 import { BotTracker } from './telegram/telegram';
 import { FavoriteService } from './telegram/services/telegram.favorite.service';
 import { BanService } from './telegram/services/telegram.ban.service';
@@ -37,13 +35,10 @@ appContainer.bind<ITrackService>(TYPES.ITrackService).to(TrackService);
 appContainer.bind<IUserRepository>(TYPES.IUserRepository).to(UserRepository);
 appContainer.bind<IDeliverRepository>(TYPES.IDeliverRepository).to(DeliverRepository);
 appContainer.bind<IUserService>(TYPES.IUserService).to(UserService);
-appContainer.bind<IBotTracker>(TYPES.IBotTracker).to(BotTracker);
+appContainer.bind<IBotTracker>(TYPES.IBotTracker).to(BotTracker).inSingletonScope();
 appContainer.bind<IDeliverTrackService>(TYPES.IDeliverTrackService).to(DeliverTrackService);
-appContainer.bind<IBanService>(TYPES.IDeliverTrackService).to(BanService);
-appContainer.bind<IFavoriteService>(TYPES.IDeliverTrackService).to(FavoriteService);
-appContainer
-	.bind<ITelegramMessageService>(TYPES.ITelegramMessageService)
-	.to(TelegramMessageService);
+appContainer.bind<IBanService>(TYPES.IBanService).to(BanService);
+appContainer.bind<IFavoriteService>(TYPES.IFavoriteService).to(FavoriteService);
 appContainer.bind<App>(TYPES.Application).to(App);
 const app = appContainer.get<App>(TYPES.Application);
 app.init();

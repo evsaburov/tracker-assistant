@@ -13,13 +13,24 @@ import 'reflect-metadata';
 @injectable()
 export class TrackService implements ITrackService {
 	constructor(
-		@inject(TYPES.ITrackRepository) private readonly trackRepository: ITrackRepository,
-		@inject(TYPES.IConfigService) private readonly configService: ConfigService,
-		@inject(TYPES.ILoggerService) private readonly LoggerService: ILoggerService,
+		@inject(TYPES.ITrackRepository) readonly trackRepository: ITrackRepository,
+		@inject(TYPES.IConfigService) readonly configService: ConfigService,
+		@inject(TYPES.ILoggerService) readonly LoggerService: ILoggerService,
 	) {}
 
-	getLastTracks(amount: number, delta: number): Promise<TrackModel[]> {
-		return this.trackRepository.getLast(amount, delta);
+	async deleteById(id: number): Promise<TrackModel> {
+		return await this.trackRepository.delete(id);
+	}
+	async findTrackById(id: number): Promise<TrackModel | null> {
+		return await this.trackRepository.find(id);
+	}
+
+	async findByIds(id: number[]): Promise<TrackModel[]> {
+		return await this.trackRepository.findByIds(id);
+	}
+
+	async getLastTracks(amount: number, delta: number): Promise<TrackModel[]> {
+		return await this.trackRepository.getLast(amount, delta);
 	}
 
 	async getPicture(text: string): Promise<string> {
@@ -69,5 +80,5 @@ export class TrackService implements ITrackService {
 		return tracks;
 	}
 
-	async sendMessage(botId: number, chat: number, message: string): Promise<void> {}
+	// async sendMessage(botId: number, chat: number, message: string): Promise<void> {}
 }

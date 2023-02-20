@@ -74,7 +74,7 @@ model FavoriteTrack {
 
 enum BanType {
   ByAuthor
-  BanCategory
+  ByCategory
 }
 
 enum Role {

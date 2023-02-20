@@ -1,21 +1,41 @@
-import { FavoriteTrack } from '@prisma/client';
-import { inject } from 'inversify';
+import { FavoriteTrack, Track } from '@prisma/client';
+import { inject, injectable } from 'inversify';
 import { IPrismaService } from '../../database/prisma.interface';
 import { ILoggerService } from '../../logger/logger.interface';
 import { TYPES } from '../../types';
-import { IFavoriteService } from './telegram.ban.service.interface';
+import { IFavoriteService } from './telegram.favorite.service.interface';
 
+@injectable()
 export class FavoriteService implements IFavoriteService {
 	constructor(
 		@inject(TYPES.IPrismaService) private readonly prismaService: IPrismaService,
 		@inject(TYPES.ILoggerService) private readonly loggerService: ILoggerService,
 	) {}
 
+	async findFavorites(userId: number): Promise<FavoriteTrack[]> {
+		return await this.prismaService.client.favoriteTrack.findMany({
+			where: {
+				userId: userId,
+			},
+			orderBy: {
+				created_at: 'desc',
+			},
+			include: {
+				track: true,
+			},
+			skip: 0,
+			take: 50,
+		});
+	}
+
 	async findUserFavorite(userId: number, trackId: number): Promise<FavoriteTrack[]> {
 		return this.prismaService.client.favoriteTrack.findMany({
 			where: {
 				userId,
 				trackId,
+			},
+			include: {
+				track: true,
 			},
 		});
 	}

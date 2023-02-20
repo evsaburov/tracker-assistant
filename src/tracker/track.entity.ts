@@ -27,7 +27,7 @@ export class Track {
 	}
 
 	private getTitle(row: string[]): string {
-		return row[0].replace(/(<([^>]+)>)/gi, '');
+		return row[0];
 	}
 
 	private getCategory(obj: categoryTrack[]): string[] {
@@ -35,7 +35,7 @@ export class Track {
 	}
 
 	private getAuthorFomString(row: fieldTrack[]): string {
-		return row[0]['name'][0].replace(/(<([^>]+)>)/gi, '');
+		return row[0]['name'][0];
 	}
 
 	private getIdFromString(row: string[]): number {

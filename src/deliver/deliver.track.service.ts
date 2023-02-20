@@ -2,7 +2,7 @@ import { User, Track as TrackModel, BanType } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { ILoggerService } from '../logger/logger.interface';
 import { IBanService } from '../telegram/services/telegram.ban.service.interface';
-import { ITelegramMessageService } from '../telegram/services/telegram.message.service.interface';
+import { IBotTracker } from '../telegram/telegram.interface';
 import { ITrackService } from '../tracker/tracker.service.interface';
 import { TYPES } from '../types';
 import { IUserService } from '../users/user.service.interface';
@@ -15,9 +15,9 @@ export class DeliverTrackService implements IDeliverTrackService {
 		@inject(TYPES.IUserService) readonly userService: IUserService,
 		@inject(TYPES.ITrackService) readonly trackService: ITrackService,
 		@inject(TYPES.IDeliverRepository) readonly deliverRepository: IDeliverRepository,
-		@inject(TYPES.ITelegramMessageService) readonly messageService: ITelegramMessageService,
 		@inject(TYPES.ILoggerService) readonly loggerService: ILoggerService,
 		@inject(TYPES.IBanService) readonly banService: IBanService,
+		@inject(TYPES.IBotTracker) readonly botTracker: IBotTracker,
 	) {}
 
 	async start(): Promise<void> {
@@ -26,7 +26,7 @@ export class DeliverTrackService implements IDeliverTrackService {
 			const track = await this.getPostForUser(user);
 			if (track === null) return;
 			const text = this.prepareTextForPost(track);
-			const IsSend = await this.messageService.sendMessage(user.chat, text);
+			const IsSend = await this.botTracker.sendMessage(user.chat, text);
 			if (IsSend) {
 				const deliver = new Deliver(user.id, track.id);
 				await this.deliverRepository.create(deliver);
@@ -35,43 +35,56 @@ export class DeliverTrackService implements IDeliverTrackService {
 	}
 
 	async getPostForUser(user: User): Promise<TrackModel> {
-		const newPosts: Array<TrackModel> = [];
-		let skip = 0;
-		const take = 3;
-		do {
-			const tracks = await this.getLastPost(skip, take);
+		const post: TrackModel[] = [];
+		for (let step = 1; step < 100; step++) {
+			const tracks = await this.getLastPost(step, 1);
 			tracks.forEach(async (track) => {
-				const postSendedForUser = await this.checkPost(user, track);
-				if (!postSendedForUser) {
-					newPosts.push(track);
-					this.loggerService.log(`Выбран пост ${track.id} для ${user.first_name}`);
-				}
+				const isSend = await this.checkPost(user, track);
+				if (!isSend) return;
+				this.loggerService.log(`Выбран пост ${track.id} для ${user.first_name}`);
+				post.push(track);
 			});
-			skip += take;
-		} while (!newPosts.length);
-		return newPosts[0];
+			if (post.length == 0) continue;
+			break;
+		}
+		return post[0];
+	}
+
+	async checkPost(user: User, track: TrackModel): Promise<boolean> {
+		this.loggerService.log(`проверка поста ${track.id} для пользователя ${user.username}`);
+		const deliver = await this.deliverRepository.find(user.id, track.id);
+		if (deliver) {
+			this.loggerService.log(`Уже отправлялся ${track.id} для пользователя ${user.username}`);
+			return false;
+		}
+
+		const isAuthorInBan = await this.banService.checkBanByAuthor(user.id, track.author);
+		if (isAuthorInBan) {
+			this.loggerService.log(
+				`Блокирован по категории ${track.id} для пользователя ${user.username}`,
+			);
+			return false;
+		}
+		const isCategoryInBan = await this.banService.checkBanByCategory(user.id, track.categoryCode);
+		if (isCategoryInBan) {
+			this.loggerService.log(
+				`Блокирован по автору пост ${track.id} для пользователя ${user.username}`,
+			);
+			return false;
+		}
+		this.loggerService.log(`Прошел проверку пост ${track.id} для пользователя ${user.username}`);
+		return true;
 	}
 
 	async getLastPost(skip: number, take: number): Promise<TrackModel[]> {
 		return await this.trackService.getLastTracks(skip, take);
 	}
 
-	async checkPost(user: User, track: TrackModel): Promise<boolean> {
-		const deliver = await this.deliverRepository.find(user.id, track.id);
-		this.loggerService.log(`проверка поста ${!!deliver?.id}`);
-		if (deliver === null) return false;
-		const authorInBan = await this.banService.checkBanByAuthor(user.id, track.id);
-		if (authorInBan) return false;
-		const categoryInBan = await this.banService.checkBanByCategory(user.id, track.id);
-		if (categoryInBan) return false;
-		return true;
-	}
-
 	prepareTextForPost(track: TrackModel): string {
 		return (
-			`<b>${track.category}</b>\n\n` +
-			`<b>${track.title}</b>\n` +
-			`<a href='${track.link}'>[Link]</a>[${track.author}][${track.updated.toDateString()}]`
+			`<b>Категория: </b>${track.category}\n\n` +
+			`<b>${track.title}</b>\n\n` +
+			`<a href='${track.link}'>[Link]</a>[${track.author}][id:${track.id}]`
 		);
 	}
 }

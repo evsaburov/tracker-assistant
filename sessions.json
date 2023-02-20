@@ -10,7 +10,8 @@
     {
       "id": "912648766:912648766",
       "data": {
-        "userId": 2
+        "userId": 2,
+        "courseLike": true
       }
     }
   ]

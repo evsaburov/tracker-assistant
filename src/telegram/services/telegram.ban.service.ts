@@ -1,45 +1,97 @@
-import { BanTrack, BanType, Track } from '@prisma/client';
-import { inject } from 'inversify';
+import { BanTrack, BanType } from '@prisma/client';
+import { inject, injectable } from 'inversify';
 import { IPrismaService } from '../../database/prisma.interface';
 import { ILoggerService } from '../../logger/logger.interface';
 import { TYPES } from '../../types';
-
-export class BanService implements BanService {
+import { IBanService } from './telegram.ban.service.interface';
+@injectable()
+export class BanService implements IBanService {
 	constructor(
 		@inject(TYPES.IPrismaService) private readonly prismaService: IPrismaService,
 		@inject(TYPES.ILoggerService) private readonly loggerService: ILoggerService,
 	) {}
 
-	async checkBanByAuthor(userId: number, trackId: number): Promise<BanTrack | null> {
+	async getBansByCategory(userId: number): Promise<string[]> {
+		const bans = await this.prismaService.client.banTrack.findMany({
+			where: {
+				userId,
+				banType: BanType.ByCategory,
+			},
+			include: {
+				track: true,
+			},
+			orderBy: {
+				id: 'desc',
+			},
+			skip: 0,
+			take: 100,
+		});
+		const categories = bans.map((ban) => ban.track.category);
+		const setCategory = new Set(...categories);
+		return [...setCategory];
+	}
+
+	async delByCategory(category: string): Promise<void> {
+		const bans = await this.prismaService.client.banTrack.findMany({
+			where: {
+				banType: BanType.ByCategory,
+			},
+			include: { track: true },
+		});
+		const bansCategory = bans.filter((ban) => ban.track.category === category);
+		bansCategory.forEach(async (ban) => {
+			await this.prismaService.client.banTrack.delete({
+				where: {
+					id: ban.id,
+				},
+			});
+		});
+	}
+
+	async delByAuthor(author: string): Promise<void> {
+		const bans = await this.prismaService.client.banTrack.findMany({
+			where: {
+				banType: BanType.ByAuthor,
+			},
+			include: { track: true },
+		});
+		const bansAuthor = bans.filter((ban) => ban.track.category === author);
+		bansAuthor.forEach(async (ban) => {
+			await this.prismaService.client.banTrack.delete({
+				where: {
+					id: ban.id,
+				},
+			});
+		});
+	}
+
+	async checkBanByAuthor(userId: number, author: string): Promise<boolean> {
 		const tracks = await this.prismaService.client.banTrack.findMany({
 			where: {
 				userId,
 				banType: BanType.ByAuthor,
 			},
-			select: {
+			include: {
 				track: true,
 			},
 		});
-		if (!tracks) return null;
-		tracks.some((track) => track.track.author === );
+		return tracks.some((track) => {
+			track.track.author === author;
+		});
 	}
 
-	async checkBanByCategory(userId: number, trackId: number): Promise<BanTrack | null> {
-		return this.prismaService.client.banTrack.findFirst({
+	async checkBanByCategory(userId: number, categoryCode: string): Promise<boolean> {
+		const tracks = await this.prismaService.client.banTrack.findMany({
 			where: {
 				userId,
 				banType: BanType.ByCategory,
 			},
-		});
-	}
-
-	async checkBanBy(userId: number, trackId: number, banType: BanType): Promise<BanTrack | null> {
-		return this.prismaService.client.banTrack.findFirst({
-			where: {
-				userId,
-				trackId,
-				banType,
+			include: {
+				track: true,
 			},
+		});
+		return tracks.some((track) => {
+			track.track.categoryCode === categoryCode;
 		});
 	}
 

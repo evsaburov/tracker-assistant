@@ -18,10 +18,10 @@ export class App {
 
 	init(): void {
 		this.botTracker.init();
-		// this.track.update();
+		this.track.update();
+		this.deliverTrackService.start();
 		schedule('0 * * * *', () => this.track.update());
 		schedule('* * * * *', () => this.deliverTrackService.start());
-		// this.deliverTrackService.start();
 		this.LoggerService.log('Приложение запущено');
 	}
 }

@@ -11,15 +11,28 @@ export class TrackRepository implements ITrackRepository {
 	constructor(@inject(TYPES.IPrismaService) readonly prismaService: IPrismaService) {}
 
 	async create(track: Track): Promise<TrackModel> {
-		return this.prismaService.client.track.upsert({
+		return await this.prismaService.client.track.upsert({
 			where: { fk: track.fk },
 			create: track,
 			update: track,
 		});
 	}
 
+	async delete(id: number): Promise<TrackModel> {
+		return await this.prismaService.client.track.delete({ where: { id } });
+	}
+
 	async find(id: number): Promise<TrackModel | null> {
-		return this.prismaService.client.track.findFirst({ where: { id } });
+		return await this.prismaService.client.track.findFirst({ where: { id } });
+	}
+	async findByIds(ids: number[]): Promise<TrackModel[]> {
+		return await this.prismaService.client.track.findMany({
+			where: {
+				id: {
+					in: ids,
+				},
+			},
+		});
 	}
 
 	async getLast(amount: number, delta: number): Promise<TrackModel[]> {

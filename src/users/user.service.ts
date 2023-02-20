@@ -9,8 +9,8 @@ import 'reflect-metadata';
 @injectable()
 export class UserService implements IUserService {
 	constructor(
-		@inject(TYPES.IUserRepository) private readonly userRepository: IUserRepository,
-		@inject(TYPES.ILoggerService) private logger: ILoggerService,
+		@inject(TYPES.IUserRepository) readonly userRepository: IUserRepository,
+		@inject(TYPES.ILoggerService) readonly logger: ILoggerService,
 	) {}
 
 	async create(user: User): Promise<UserModel> {
@@ -22,13 +22,14 @@ export class UserService implements IUserService {
 	}
 
 	async find(id: number): Promise<UserModel | null> {
-		return this.userRepository.find(id);
+		return await this.userRepository.find(id);
 	}
+
 	async findByChatId(id: number): Promise<UserModel | null> {
-		return this.userRepository.findByChat(id);
+		return await this.userRepository.findByChat(id);
 	}
 
 	async activeUsers(): Promise<UserModel[]> {
-		return this.userRepository.findActive();
+		return await this.userRepository.findActive();
 	}
 }
