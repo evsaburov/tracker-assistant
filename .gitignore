@@ -1,0 +1,12 @@
+/node_modules
+/dist
+/.clinic
+/.env
+/nodemon.json
+/.prettierrc
+/.eslintrc
+/.vscode
+/prisma/dev.db
+/prisma/dev.db-journal
+/session.json
+/tips.md

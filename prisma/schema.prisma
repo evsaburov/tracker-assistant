@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int             @id @default(autoincrement())
+  username   String
+  first_name String
+  chat       Int             @unique
+  status     Status          @default(ACTIVE)
+  role       Role            @default(USER)
+  ban        BanTrack[]
+  Favorit    FavoriteTrack[]
+  deliver    DeliverTrack[]
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+}
+
+model DeliverTrack {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Track {
+  id           Int             @id @default(autoincrement())
+  fk           Int             @unique
+  link         String
+  updated      DateTime
+  title        String
+  author       String
+  categoryCode String
+  category     String
+  linkImg      String?
+  ban          BanTrack[]
+  favorit      FavoriteTrack[]
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+  DeliverTrack DeliverTrack[]
+}
+
+model BanTrack {
+  id         Int      @id @default(autoincrement())
+  banType    BanType
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model FavoriteTrack {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+enum BanType {
+  ByAuthor
+  ByCategory
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUBSCRIBER
+}
+
+enum Status {
+  ACTIVE
+  BLOCKED
+  STOP
+}
