@@ -1,4 +1,4 @@
-FROM node:16-alpina
+FROM node:14-alpina
 WORKDIR /opt/app
 ADD packege.json packege.json
 RUN npm install
