@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Publish to registy
-        uses: elgohr/Publish-Docker-Github-Action@v4/master
+        uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           registry: docker.pkg.github.com
           name: docker.pkg.github.com/evsaburov/tracker-assistant/
