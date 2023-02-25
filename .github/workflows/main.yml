@@ -13,11 +13,14 @@ jobs:
           echo "TRACKER_URL : ${{ vars.TRACKER_URL }}"
           echo "DATABASE_URL : ${{ vars.DATABASE_URL }}"
           echo "BOT_TOKEN : ${{ vars.BOT_TOKEN }}"
+          echo "TRACKER_URL : ${{ secrets.TRACKER_URL }}"
+          echo "DATABASE_URL : ${{ secrets.DATABASE_URL }}"
+          echo "BOT_TOKEN : ${{ secrets.BOT_TOKEN }}"
 
       - uses: actions/checkout@master
       - name: Publish to registy
         env:
-          DATABASE_URL: ${{ vars.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           registry: docker.pkg.github.com
