@@ -4,6 +4,7 @@ services:
     image: track:latest
     container_name: track
     restart: always
+    # volumes: -./.env:/opt/app/.env
   db:
     container_name: pg_container
     image: postgres:14
@@ -12,3 +13,8 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: test_db
+      # PGDATA: /var/lib/postgresql/data/pgdata
+    # volumes:
+    # - ./pgdata:/var/lib/postgresql/data/pgdata
+    # ports:
+    # - '5432:5432'

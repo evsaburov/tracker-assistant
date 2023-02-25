@@ -2,6 +2,8 @@ name: tracker
 on:
   push:
     branches: [master]
+    paths:
+      - './prisma/**/*.*'
 
 jobs:
   build:
@@ -10,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Publish to registy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           registry: docker.pkg.github.com
