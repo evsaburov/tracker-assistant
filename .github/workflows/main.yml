@@ -2,8 +2,6 @@ name: tracker
 on:
   push:
     branches: [master]
-    paths:
-      - './prisma/**/*.*'
 
 jobs:
   build:
