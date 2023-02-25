@@ -1,6 +1,6 @@
 FROM node:14-alpine
 WORKDIR /opt/app
-ADD packege.json packege.json
+ADD package.json package.json
 RUN npm install
 ADD . .
 RUN npm run build
