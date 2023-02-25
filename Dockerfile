@@ -5,5 +5,5 @@ RUN npm install
 ADD . .
 RUN npx prisma migrate deploy
 RUN npm run build
+RUN npm run start
 RUN npm prune --production
-CMD ["node", "./dist/main.js"]
