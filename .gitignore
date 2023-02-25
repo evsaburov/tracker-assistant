@@ -8,5 +8,5 @@
 /.vscode
 /prisma/dev.db
 /prisma/dev.db-journal
-/session.json
+/sessions.json
 /tips.md
