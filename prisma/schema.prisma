@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://root:root@localhost:5432/tracker-assistant?schema=public"
+  url      = env("DATABASE_URL")
 }
 
 model User {
