@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: tracker
     env:
-      DATABASE_URL: postgresql://root:root@localhost:5432/tracker-assistant?schema=public
+      DATABASE_URL: postgresql://root:root@postgres:5432/tracker-assistant?schema=public
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
