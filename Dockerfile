@@ -5,4 +5,4 @@ RUN npm install
 ADD . .
 RUN npm run build
 RUN npm prune --production
-RUN npm run start
+CMD ["node", "./dist/main.js"]

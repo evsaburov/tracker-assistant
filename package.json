@@ -14,7 +14,7 @@
 		"generate": "prisma generate",
 		"lint:fix": "eslint ./src/** --fix",
 		"db:push": "prisma db push --preview-feature",
-		"build": "prisma generate && tsc"
+		"build": "tsc"
 	},
 	"author": "Saburov Evgeniy",
 	"license": "ISC",
