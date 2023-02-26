@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: tracker
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/grading-app
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/grading-app
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
