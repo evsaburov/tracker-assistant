@@ -19,6 +19,7 @@ jobs:
       - run: npm run build
       # run the migration in the test database
       - run: npm run db:push
+      - run: npm run start
       - uses: actions/checkout@master
 
         env:
