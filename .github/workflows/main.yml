@@ -12,7 +12,6 @@ jobs:
       - name: Publish to registy
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
-          compose-file: './docker/docker-compose.yml'
           registry: docker.pkg.github.com
           name: docker.pkg.github.com/evsaburov/tracker-assistant
           username: ${{ secrets.DOCKER_USERNAME }}
