@@ -16,5 +16,5 @@ jobs:
           registry: docker.pkg.github.com
           name: docker.pkg.github.com/evsaburov/tracker-assistant/tracker
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          password: ${{ secrets.DOCKER_PASSWORD  }}
           tags: 'develop'
