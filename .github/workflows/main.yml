@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: tracker
     steps:
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Publish to registy
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
