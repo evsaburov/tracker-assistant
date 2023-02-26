@@ -8,8 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: tracker
-    env:
-      DATABASE_URL: postgresql://root:root@track:5432/tracker-assistant?schema=public
     steps:
       - uses: actions/checkout@master
       - name: Publish to registy
