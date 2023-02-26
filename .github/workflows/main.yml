@@ -8,22 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: tracker
-    env:
-      DATABASE_URL: postgresql://root:root@postgres:5432/tracker-assistant?schema=public
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - run: npm ci
-      - run: npm run build
-      # run the migration in the test database
-      - run: npm run db:push
-      - run: npm run start
-      - uses: actions/checkout@master
-
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Publish to registy
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
