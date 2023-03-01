@@ -9,11 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: tracker
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - name: Publish to registy
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           registry: docker.pkg.github.com
           name: docker.pkg.github.com/evsaburov/tracker-assistant/tracker
-          username: ${{ secrets.GITHUB_TOKEN  }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           tags: 'develop'
